@@ -11,7 +11,7 @@ ModernAVPlayer is an ongoing project that aims to create a more usable audio vid
   s.source           = { :git => 'https://github.com/mdfalcon104/ModernAVPlayer-2025.git', :tag => s.version.to_s }
   s.default_subspec  = 'Core'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '10.0'
   s.swift_version = '5.0'
 
   s.subspec 'Core' do |core|
@@ -19,7 +19,7 @@ ModernAVPlayer is an ongoing project that aims to create a more usable audio vid
   end
 
   s.subspec 'RxSwift' do |ss|
-    ss.ios.deployment_target = '9.0'
+    ss.ios.deployment_target = '10.0'
     ss.dependency 'ModernAVPlayer/Core'
     ss.dependency "RxSwift", "~> 6.0"
     ss.dependency "RxCocoa", "~> 6.0"
