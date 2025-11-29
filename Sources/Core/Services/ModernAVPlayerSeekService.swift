@@ -56,15 +56,13 @@ struct ModernAVPlayerSeekService: SeekService {
 
         guard position > 0 else { return (0, nil) }
 
-        let duration = item.duration.seconds
-        guard duration.isNormal else {
-            let ranges = getItemRangesAvailable(item)
-            return isPositionInRanges(position, ranges) ? (position, nil) : (nil, .seekPositionNotAvailable)
+        if let duration = item.safeDuration {
+            guard position < duration
+                else { return (nil, .seekOverstepPosition) }
+            return (position, nil)
         }
-
-        guard position < duration
-            else { return (nil, .seekOverstepPosition) }
-
-        return (position, nil)
+        
+        let ranges = getItemRangesAvailable(item)
+        return isPositionInRanges(position, ranges) ? (position, nil) : (nil, .seekPositionNotAvailable)
     }
 }

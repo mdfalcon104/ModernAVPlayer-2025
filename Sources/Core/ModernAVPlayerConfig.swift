@@ -3,8 +3,8 @@
 // ModernAVPlayer
 // Copyright (c) 2018 Raphael Ankierman <raphael.ankierman@radiofrance.com>
 //
-// CMTime+Extensions.swift
-// Created by raphael ankierman on 17/03/2018.
+// ModernAVPlayerConfig.swift
+// Created for safe duration handling with URL metadata fallback.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,29 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import AVFoundation
+import Foundation
 
-extension CMTime {
-    /// Safely converts CMTime to seconds if the time is valid and normal.
-    /// Returns nil if the time is invalid, indefinite, or NaN.
-    var safeSeconds: Double? {
-        guard isNumeric, !isIndefinite else { return nil }
-        return seconds
-    }
-}
-
-extension AVPlayerItem {
-    /// Safely returns the duration in seconds if available.
-    /// Returns nil if duration is not loaded or is invalid.
-    var safeDuration: Double? {
-        duration.safeSeconds
-    }
-}
-
-extension AVAsset {
-    /// Safely returns the duration in seconds if available.
-    /// Returns nil if duration is not loaded or is invalid.
-    var safeDuration: Double? {
-        duration.safeSeconds
-    }
+/// Configuration for ModernAVPlayer duration handling
+public class ModernAVPlayerDurationConfig {
+    /// When enabled, AVAsset duration will fallback to URL metadata (e.g., 'dur' query parameter)
+    /// if the asset's duration is unavailable or invalid.
+    /// Default: false (uses only AVAsset duration)
+    public static var useURLMetadataFallback: Bool = false
 }

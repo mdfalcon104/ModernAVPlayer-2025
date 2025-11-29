@@ -25,6 +25,7 @@ final class SimpleVideoVC: UIViewController {
 
     @IBOutlet weak private var stateLabel: UILabel!
     @IBOutlet weak private var timingLabel: UILabel!
+    @IBOutlet weak private var durationLabel: UILabel!
     @IBOutlet weak private var playerVideo: AVPlayerView!
     @IBOutlet weak private var prevSeek: UIButton!
     @IBOutlet weak private var nextSeek: UIButton!

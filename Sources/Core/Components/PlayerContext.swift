@@ -78,10 +78,10 @@ final class ModernAVPlayerContext: NSObject, PlayerContext {
         didSet { delegate?.playerContext(didCurrentMediaChange: currentMedia) }
     }
     var currentTime: Double {
-        player.currentTime().seconds
+        player.currentTime().safeSeconds ?? 0
     }
     var itemDuration: Double? {
-        currentItem?.duration.seconds
+        currentItem?.safeDuration
     }
     var remoteCommands: [ModernAVPlayerRemoteCommand]? {
         didSet {

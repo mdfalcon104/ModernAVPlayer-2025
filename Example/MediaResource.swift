@@ -65,7 +65,7 @@ enum MediaResource: CustomStringConvertible {
         case .local:
             return URL(fileURLWithPath: Bundle.main.path(forResource: "AllNew", ofType: "mp3")!)
         case .remote:
-            return URL(string: "http://media.radiofrance-podcast.net/podcast09/13100-17.01.2017-ITEMA_21199585-0.mp3")!
+            return URL(string: "https://rr3---sn-8qj-jmgl.googlevideo.com/videoplayback?expire=1764442810&ei=Wu4qacDSOvOW1d8Pua6eiAo&ip=123.19.25.115&id=o-AE6unX5b7ujkP0zUXdVG9yoZQnncst365PEnBj3Tp6SM&itag=140&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=301&met=1764421210,&mh=wp&mm=31,29&mn=sn-8qj-jmgl,sn-i3belne6&ms=au,rdu&mv=m&mvi=3&pl=25&rms=au,au&gcr=vn&initcwndbps=2507500&bui=AdEuB5RzaWCz0Wp_39nUuofu5nVhocxmqs0ejaGLhMuZqW6yeHRg2m0zTNza0U_HfNZYU098vrzEYHgd&vprv=1&svpuc=1&mime=audio/mp4&ns=O68K2G26rQmiqwF_hZeHDOcQ&rqh=1&gir=yes&clen=3896503&dur=240.639&lmt=1761961515347015&mt=1764420796&fvip=5&keepalive=yes&lmw=1&fexp=51557447,51565116,51565682,51580970&c=TVHTML5&sefc=1&txp=5532534&n=4s40YI3cCOgH4A&sparams=expire,ei,ip,id,itag,source,requiressl,xpc,gcr,bui,vprv,svpuc,mime,ns,rqh,gir,clen,dur,lmt&lsparams=cps,met,mh,mm,mn,ms,mv,mvi,pl,rms,initcwndbps&lsig=APaTxxMwRAIgQ9RI8oKEBUsS2rWXeaq-ViPGuDql6Op0gIguQ-gm1hkCIEV5C-APwR6Yo66zNixcrMSPONDJl-1EiPOYu0HAuJUE&sig=AJfQdSswRgIhAOmlSkmtLu27WbVGJ5CCW-MA7xwzbLIjZ0UgCyjdjzHjAiEA3NTJT1MnmuUpYSCXYSRbhJ3G23ujvkr06VW_C3wNQgY%3D")!
         case .invalid:
             return URL(fileURLWithPath: Bundle.main.path(forResource: "noreason", ofType: "txt")!)
         case .custom(let customUrl):

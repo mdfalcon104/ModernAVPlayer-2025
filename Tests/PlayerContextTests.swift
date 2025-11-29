@@ -66,46 +66,10 @@ final class PlayerContextTests: XCTestCase {
 
         // ACT
         let currentItem = context.currentItem
-        print("current", currentItem?.duration.seconds)
-        let totalDuration = currentItem?.duration.seconds ?? 0
+        let totalDuration = currentItem?.safeDuration ?? 0
 
         // ASSERT
         XCTAssertEqual(totalDuration, expectedDuration, accuracy: 0.001)
-    }
-
-    func testTotalDurationFromRealURL() {
-        // ARRANGE
-        let url = "https://rr3---sn-8qj-jmgl.googlevideo.com/videoplayback?expire=1764442810&ei=Wu4qacDSOvOW1d8Pua6eiAo&ip=123.19.25.115&id=o-AE6unX5b7ujkP0zUXdVG9yoZQnncst365PEnBj3Tp6SM&itag=140&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&cps=301&met=1764421210,&mh=wp&mm=31,29&mn=sn-8qj-jmgl,sn-i3belne6&ms=au,rdu&mv=m&mvi=3&pl=25&rms=au,au&gcr=vn&initcwndbps=2507500&bui=AdEuB5RzaWCz0Wp_39nUuofu5nVhocxmqs0ejaGLhMuZqW6yeHRg2m0zTNza0U_HfNZYU098vrzEYHgd&vprv=1&svpuc=1&mime=audio/mp4&ns=O68K2G26rQmiqwF_hZeHDOcQ&rqh=1&gir=yes&clen=3896503&dur=240.639&lmt=1761961515347015&mt=1764420796&fvip=5&keepalive=yes&lmw=1&fexp=51557447,51565116,51565682,51580970&c=TVHTML5&sefc=1&txp=5532534&n=4s40YI3cCOgH4A&sparams=expire,ei,ip,id,itag,source,requiressl,xpc,gcr,bui,vprv,svpuc,mime,ns,rqh,gir,clen,dur,lmt&lsparams=cps,met,mh,mm,mn,ms,mv,mvi,pl,rms,initcwndbps&lsig=APaTxxMwRAIgQ9RI8oKEBUsS2rWXeaq-ViPGuDql6Op0gIguQ-gm1hkCIEV5C-APwR6Yo66zNixcrMSPONDJl-1EiPOYu0HAuJUE&sig=AJfQdSswRgIhAOmlSkmtLu27WbVGJ5CCW-MA7xwzbLIjZ0UgCyjdjzHjAiEA3NTJT1MnmuUpYSCXYSRbhJ3G23ujvkr06VW_C3wNQgY%3D"
-        guard let mediaURL = URL(string: url) else {
-            XCTFail("Invalid URL")
-            return
-        }
-        
-        let expectation = XCTestExpectation(description: "Duration loaded from URL")
-        let asset = AVAsset(url: mediaURL)
-        
-        // ACT & ASSERT
-        asset.loadValuesAsynchronously(forKeys: ["duration"]) { [weak self] in
-            var error: NSError?
-            let status = asset.statusOfValue(forKey: "duration", error: &error)
-            
-            DispatchQueue.main.async {
-                XCTAssertEqual(status, .loaded, "Duration key should be loaded")
-                XCTAssertNil(error, "Should have no error loading duration")
-                
-                let duration = asset.duration.seconds
-                print("Real URL duration: \(duration) seconds (\(Int(duration / 60))m \(Int(duration.truncatingRemainder(dividingBy: 60)))s)")
-                
-                // Verify duration is valid
-                XCTAssertGreaterThan(duration, 0, "Duration should be greater than 0")
-                XCTAssertLessThan(duration, 3600, "Duration should be less than 1 hour")
-                XCTAssertGreaterThan(duration, 240, "Duration should be more than 240 seconds")
-                
-                expectation.fulfill()
-            }
-        }
-        
-        wait(for: [expectation], timeout: 10.0)
     }
 
     func testCurrentItem() {
@@ -353,4 +317,201 @@ final class PlayerContextTests: XCTestCase {
         // ASSERT
         Verify(delegate, 1, .playerContext(unavailableActionReason: .value(.loadMediaFirst)))
     }
+
+    // MARK: - safeDuration Tests
+
+    func testSafeDurationWithValidDuration() {
+        // ARRANGE
+        let expectedDuration: Double = 42.5
+        let duration = CMTime(seconds: expectedDuration, preferredTimescale: config.preferredTimescale)
+        let item = MockPlayerItem.createOne(url: "foo", duration: duration)
+        
+        // ACT
+        let safeDuration = item.safeDuration
+        
+        // ASSERT
+        XCTAssertNotNil(safeDuration, "safeDuration should not be nil for valid duration")
+        XCTAssertEqual(safeDuration ?? 0, expectedDuration, accuracy: 0.001)
+    }
+
+    func testSafeDurationWithInvalidDuration() {
+        // ARRANGE
+        let item = MockPlayerItem.createOne(url: "foo", duration: CMTime.invalid)
+        
+        // ACT
+        let safeDuration = item.safeDuration
+        
+        // ASSERT
+        XCTAssertNil(safeDuration, "safeDuration should be nil for invalid duration")
+    }
+
+    func testSafeDurationWithIndefiniteDuration() {
+        // ARRANGE
+        let item = MockPlayerItem.createOne(url: "foo", duration: CMTime.indefinite)
+        
+        // ACT
+        let safeDuration = item.safeDuration
+        
+        // ASSERT
+        XCTAssertNil(safeDuration, "safeDuration should be nil for indefinite duration")
+    }
+
+    func testSafeDurationWithZeroDuration() {
+        // ARRANGE
+        let item = MockPlayerItem.createOne(url: "foo", duration: CMTime.zero)
+        
+        // ACT
+        let safeDuration = item.safeDuration
+        
+        // ASSERT
+        XCTAssertNotNil(safeDuration, "safeDuration should not be nil for zero duration")
+        XCTAssertEqual(safeDuration ?? -1, 0.0, accuracy: 0.001)
+    }
+
+    func testCMTimeSafeSeconds() {
+        // Test valid time
+        let validTime = CMTime(seconds: 100.5, preferredTimescale: 1000)
+        XCTAssertNotNil(validTime.safeSeconds, "safeSeconds should not be nil for valid time")
+        XCTAssertEqual(validTime.safeSeconds ?? 0, 100.5, accuracy: 0.001)
+        
+        // Test invalid time
+        XCTAssertNil(CMTime.invalid.safeSeconds, "safeSeconds should be nil for invalid time")
+        
+        // Test indefinite time
+        XCTAssertNil(CMTime.indefinite.safeSeconds, "safeSeconds should be nil for indefinite time")
+        
+        // Test zero time
+        XCTAssertNotNil(CMTime.zero.safeSeconds, "safeSeconds should not be nil for zero time")
+        XCTAssertEqual(CMTime.zero.safeSeconds ?? -1, 0.0, accuracy: 0.001)
+    }
+    
+    func testDurationFromURLMetadata() {
+        // ARRANGE
+        let urlString = "https://example.com/audio.mp3?dur=240.639&other=param"
+        guard let url = URL(string: urlString) else {
+            XCTFail("Invalid test URL")
+            return
+        }
+        let asset = AVURLAsset(url: url)
+        
+        // ACT
+        let durationFromMetadata = asset.durationFromURLMetadata()
+        
+        // ASSERT
+        XCTAssertNotNil(durationFromMetadata, "Should extract duration from URL metadata")
+        XCTAssertEqual(durationFromMetadata ?? 0, 240.639, accuracy: 0.001)
+    }
+    
+    func testDurationFromURLMetadataWithoutDurParam() {
+        // ARRANGE - URL without 'dur' parameter
+        let urlString = "https://example.com/audio.mp3?other=param"
+        guard let url = URL(string: urlString) else {
+            XCTFail("Invalid test URL")
+            return
+        }
+        let asset = AVURLAsset(url: url)
+        
+        // ACT
+        let durationFromMetadata = asset.durationFromURLMetadata()
+        
+        // ASSERT
+        XCTAssertNil(durationFromMetadata, "Should return nil when 'dur' parameter not present")
+    }
+    
+    func testSafeDurationWithURLMetadataFallbackDisabled() {
+        // ARRANGE
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        guard let url = URL(string: urlString) else {
+            XCTFail("Invalid test URL")
+            return
+        }
+        let asset = AVURLAsset(url: url)
+        
+        // Disable flag
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = false
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        // ACT - safeDuration with flag disabled should not use URL metadata
+        // Even if AVAsset.duration is valid (0), it should NOT fallback to URL metadata
+        let duration = asset.safeDuration
+        
+        // ASSERT
+        // When fallback is disabled, should use only AVAsset duration
+        // AVURLAsset returns 0 for unloaded duration, which is valid numeric value
+        XCTAssertNotNil(duration, "AVAsset.duration is valid (0), so should return 0")
+        XCTAssertEqual(duration ?? -1, 0.0, accuracy: 0.001)
+    }
+    
+    func testSafeDurationWithURLMetadataFallbackDisabledNoAVAssetDuration() {
+        // ARRANGE - Create a scenario where AVAsset duration is truly invalid
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        guard let url = URL(string: urlString) else {
+            XCTFail("Invalid test URL")
+            return
+        }
+        
+        // Use indefinite duration to simulate invalid AVAsset state
+        let mockItem = MockPlayerItem.createOne(url: urlString, duration: CMTime.indefinite)
+        
+        // Disable flag
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = false
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        // ACT
+        let duration = mockItem.safeDuration
+        
+        // ASSERT
+        XCTAssertNil(duration, "Should return nil when fallback disabled and AVAsset duration is indefinite")
+    }
+    
+    func testSafeDurationWithURLMetadataFallbackEnabled() {
+        // ARRANGE
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        guard let url = URL(string: urlString) else {
+            XCTFail("Invalid test URL")
+            return
+        }
+        let asset = AVURLAsset(url: url)
+        
+        // Enable flag
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = true
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        // ACT - with invalid AVAsset duration but valid URL metadata
+        let duration = asset.safeDuration
+        
+        // ASSERT
+        XCTAssertNotNil(duration, "Should return duration from URL metadata when fallback is enabled")
+        XCTAssertEqual(duration ?? 0, 240.639, accuracy: 0.001)
+    }
+    
+    func testSafeDurationWithURLMetadataFallbackOverride() {
+        // ARRANGE
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        guard let url = URL(string: urlString) else {
+            XCTFail("Invalid test URL")
+            return
+        }
+        
+        // Use indefinite duration to simulate invalid AVAsset state
+        let mockItem = MockPlayerItem.createOne(url: urlString, duration: CMTime.indefinite)
+        
+        // Disable flag globally
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = false
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        // ACT - override the global flag with parameter
+        // Create AVURLAsset to test URL metadata parsing
+        let asset = AVURLAsset(url: url)
+        let duration = asset.safeDuration(useURLMetadataFallback: true)
+        
+        // ASSERT
+        XCTAssertNotNil(duration, "Should use URL metadata when override parameter is true")
+        XCTAssertEqual(duration ?? 0, 240.639, accuracy: 0.001)
+    }
 }
+

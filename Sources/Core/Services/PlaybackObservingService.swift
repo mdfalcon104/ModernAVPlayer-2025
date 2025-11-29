@@ -73,14 +73,15 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     
     private func hasReallyReachedEndTime(player: AVPlayer) -> Bool {
         guard
-            let duration = player.currentItem?.duration.seconds
+            let duration = player.currentItem?.safeDuration,
+            let currentTime = player.currentTime().safeSeconds
             else { return false }
         
         /// item current time when receive end time notification
         /// is not so accurate according to duration
         /// added +1 make sure about the computation
-        let currentTime = player.currentTime().seconds + 1
-        return currentTime.rounded() >= duration.rounded()
+        let adjustedTime = currentTime + 1
+        return adjustedTime.rounded() >= duration.rounded()
     }
     
     @objc

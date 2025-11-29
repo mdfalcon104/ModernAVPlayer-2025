@@ -29,6 +29,7 @@ final class SimpleAudioVC: UIViewController {
 
     @IBOutlet weak private var stateLabel: UILabel!
     @IBOutlet weak private var timingLabel: UILabel!
+    @IBOutlet weak private var durationLabel: UILabel!
     @IBOutlet weak private var mediaPicker: UIPickerView!
     
     // MARK: - LifeCycle
@@ -40,6 +41,9 @@ final class SimpleAudioVC: UIViewController {
         player.delegate = self
         mediaPicker.dataSource = self
         mediaPicker.delegate = self
+        
+        // Enable URL metadata fallback for streaming URLs with 'dur' parameter
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = true
 
         let media =  getMedia(index: 0)
         player.load(media: media, autostart: false)
@@ -91,6 +95,11 @@ extension SimpleAudioVC: ModernAVPlayerDelegate {
 
     func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
         DispatchQueue.main.async { self.timingLabel.text = "Timing: " + String(format: "%.2f", currentTime) }
+    }
+    
+    func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
+        print("Duration", itemDuration)
+        DispatchQueue.main.async { self.durationLabel.text = "Duration: " + String(format: "%.2f", itemDuration ?? 0.0) }
     }
 }
 

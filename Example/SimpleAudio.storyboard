@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8pj-Db-dz9">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8pj-Db-dz9">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,10 +18,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mlj-CQ-jPS">
-                                <rect key="frame" x="20" y="44" width="374" height="216"/>
+                                <rect key="frame" x="20" y="48" width="374" height="216"/>
                             </pickerView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="jiY-A4-u4S" userLabel="Labels">
-                                <rect key="frame" x="20" y="280" width="374" height="48"/>
+                                <rect key="frame" x="20" y="284" width="374" height="72"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="State" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g4s-cd-v6c">
                                         <rect key="frame" x="0.0" y="0.0" width="374" height="24"/>
@@ -35,10 +35,16 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vy1-y7-eYh">
+                                        <rect key="frame" x="0.0" y="48" width="374" height="24"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="M5n-bk-XEc" userLabel="CommandPlay">
-                                <rect key="frame" x="20" y="388" width="374" height="30"/>
+                                <rect key="frame" x="20" y="416" width="374" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tve-2U-5od" userLabel="Play">
                                         <rect key="frame" x="0.0" y="0.0" width="118" height="30"/>
@@ -64,7 +70,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="2He-N3-ZbS" userLabel="Seek">
-                                <rect key="frame" x="20" y="438" width="374" height="30"/>
+                                <rect key="frame" x="20" y="466" width="374" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gEb-Xp-rKx">
                                         <rect key="frame" x="0.0" y="0.0" width="118" height="30"/>
@@ -109,6 +115,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="durationLabel" destination="Vy1-y7-eYh" id="l1g-AO-W5h"/>
                         <outlet property="mediaPicker" destination="mlj-CQ-jPS" id="BJP-pk-Fhl"/>
                         <outlet property="stateLabel" destination="g4s-cd-v6c" id="ANT-PO-y2d"/>
                         <outlet property="timingLabel" destination="d0L-ea-V62" id="KZc-YM-Tdw"/>

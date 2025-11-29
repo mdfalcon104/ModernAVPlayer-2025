@@ -46,7 +46,7 @@ struct LoadedState: PlayerState {
         guard let media = context.currentMedia else { assertionFailure(); return }
 
         context.nowPlaying.update(metadata: media.getMetadata(),
-                                  duration: context.currentItem?.duration.seconds,
+                                  duration: context.currentItem?.safeDuration,
                                   isLive: media.isLive())
     }
 
