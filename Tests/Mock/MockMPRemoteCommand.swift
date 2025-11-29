@@ -29,10 +29,10 @@ import Foundation
 import MediaPlayer
 @testable import ModernAVPlayer
 
-final class MockPlayCommand: MPRemoteCommand {
+final class MockPlayCommand {
     
     var addTargetLastHandler: ((MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus)?
-    override func addTarget(handler: @escaping (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus) -> Any {
+    func addTarget(handler: @escaping (MPRemoteCommandEvent) -> MPRemoteCommandHandlerStatus) -> Any {
         addTargetLastHandler = handler
         return self
     }
@@ -40,6 +40,4 @@ final class MockPlayCommand: MPRemoteCommand {
     func execute(event: MPRemoteCommandEvent) {
         _ = addTargetLastHandler?(event)
     }
-    
-    init(fake: Void) { }
 }

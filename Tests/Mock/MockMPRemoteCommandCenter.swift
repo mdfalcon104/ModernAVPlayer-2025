@@ -27,12 +27,10 @@
 import Foundation
 import MediaPlayer
 
-final class MockMPRemoteCommandCenter: MPRemoteCommandCenter {
+final class MockMPRemoteCommandCenter {
     
-    var overridePlayCommand: MPRemoteCommand!
-    override var playCommand: MPRemoteCommand {
-        return overridePlayCommand
+    var overridePlayCommand: MockPlayCommand?
+    var playCommand: MockPlayCommand {
+        return overridePlayCommand ?? MockPlayCommand()
     }
-    
-    init(fake: Void) { }
 }

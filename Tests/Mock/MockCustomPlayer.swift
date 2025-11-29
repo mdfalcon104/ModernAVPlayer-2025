@@ -46,7 +46,7 @@ final class MockCustomPlayer: AVPlayer {
         return overrideStatus
     }
 
-    var overrideAautomaticallyWaitsToMinimizeStalling: Bool!
+    var overrideAautomaticallyWaitsToMinimizeStalling: Bool = true
     var automaticallyWaitsToMinimizeStallingCallCount = 0
     var automaticallyWaitsToMinimizeStallingNewValue: Bool?
     override var automaticallyWaitsToMinimizeStalling: Bool {
@@ -113,7 +113,7 @@ final class MockCustomPlayer: AVPlayer {
     }
 
     private(set) var allowsExternalPlaybackCallCount = 0
-    var overrideAllowsExternalPlayback: Bool!
+    var overrideAllowsExternalPlayback: Bool = false
     override var allowsExternalPlayback: Bool {
         get { overrideAllowsExternalPlayback }
         set { allowsExternalPlaybackCallCount += 1 }

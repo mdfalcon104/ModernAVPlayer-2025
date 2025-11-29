@@ -29,9 +29,7 @@
     {
       "name": "RxSwift",
       "dependencies": {
-        "ModernAVPlayer/Core": [
-
-        ],
+        "ModernAVPlayer/Core": [],
         "RxSwift": [
           "~> 5.0"
         ],
