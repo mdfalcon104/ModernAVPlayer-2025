@@ -181,7 +181,7 @@ final class ModernAVPlayerContext: NSObject, PlayerContext {
         state.play()
     }
     
-    func updateMetadata(_ metadata: PlayerMediaMetadata?) {
+    public func updateMetadata(_ metadata: PlayerMediaMetadata?) {
         guard let media = currentMedia
             else { unaivalableCommand(reason: .loadMediaFirst); return }
         
