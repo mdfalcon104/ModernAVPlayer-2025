@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = 'ModernAVPlayer2'
+  s.name             = 'ModernAVPlayer'
   s.version          = '1.7.5'
   s.summary          = 'ModernAVPlayer is an audio persistence AVPlayer wrapper'
   s.description      = <<-DESC
