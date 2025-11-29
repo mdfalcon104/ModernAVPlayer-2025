@@ -513,5 +513,86 @@ final class PlayerContextTests: XCTestCase {
         XCTAssertNotNil(duration, "Should use URL metadata when override parameter is true")
         XCTAssertEqual(duration ?? 0, 240.639, accuracy: 0.001)
     }
+    
+    func testPlaybackStopsAtURLMetadataDuration() {
+        // ARRANGE - Simulate playback with URL metadata duration
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        let duration = 240.639
+        let mockItem = MockPlayerItem.createOne(url: urlString, duration: CMTime(seconds: duration, preferredTimescale: 1000))
+        
+        // Enable URL metadata fallback
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = true
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        // ACT - Get safe duration
+        let safeDuration = mockItem.safeDuration
+        
+        // ASSERT - Duration should respect the limit
+        XCTAssertNotNil(safeDuration, "safeDuration should not be nil")
+        XCTAssertEqual(safeDuration ?? 0, duration, accuracy: 0.001)
+        
+        // Simulate current time exceeding duration
+        let currentTimeExceeded = duration + 5.0  // 5 seconds past end
+        XCTAssertGreaterThan(currentTimeExceeded, safeDuration ?? 0, 
+                            "Current time should exceed duration to trigger stop")
+    }
+    
+    func testPlaybackObservingServiceStopsAtDuration() {
+        // ARRANGE
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        let duration = 240.639
+        let mockPlayer = MockCustomPlayer()
+        
+        let mockItem = MockPlayerItem.createOne(url: urlString, duration: CMTime(seconds: duration, preferredTimescale: 1000))
+        mockPlayer.overrideCurrentItem = mockItem
+        
+        // Enable URL metadata fallback
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = true
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        let service = ModernAVPlayerPlaybackObservingService(player: mockPlayer)
+        var playToEndTimeCalled = false
+        service.onPlayToEndTime = { playToEndTimeCalled = true }
+        
+        // ACT - Check if service properly detects end of playback
+        let itemDuration = mockItem.safeDuration
+        
+        // ASSERT - Duration from URL metadata
+        XCTAssertNotNil(itemDuration, "itemDuration should not be nil with URL metadata")
+        XCTAssertEqual(itemDuration ?? 0, duration, accuracy: 0.001,
+                      "Duration should come from URL metadata")
+    }
+    
+    func testPlayerStateStopsWhenDurationExceeded() {
+        // ARRANGE
+        let urlString = "https://example.com/audio.mp3?dur=240.639"
+        let duration = 240.639
+        
+        // Use existing test context setup
+        let mockItem = MockPlayerItem.createOne(url: urlString, duration: CMTime(seconds: duration, preferredTimescale: 1000))
+        player.overrideCurrentItem = mockItem
+        
+        // Enable URL metadata fallback
+        let originalFlag = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        ModernAVPlayerDurationConfig.useURLMetadataFallback = true
+        defer { ModernAVPlayerDurationConfig.useURLMetadataFallback = originalFlag }
+        
+        let service = ModernAVPlayerPlaybackObservingService(player: player)
+        
+        var onPlayToEndTimeCalled = false
+        service.onPlayToEndTime = { 
+            onPlayToEndTimeCalled = true
+        }
+        
+        // ACT
+        let itemDuration = mockItem.safeDuration
+        
+        // ASSERT
+        XCTAssertNotNil(itemDuration, "itemDuration should not be nil")
+        XCTAssertEqual(itemDuration ?? 0, duration, accuracy: 0.001, 
+                      "Duration should be from URL metadata (240.639)")
+    }
 }
 

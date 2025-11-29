@@ -98,7 +98,6 @@ extension SimpleAudioVC: ModernAVPlayerDelegate {
     }
     
     func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
-        print("Duration", itemDuration)
         DispatchQueue.main.async { self.durationLabel.text = "Duration: " + String(format: "%.2f", itemDuration ?? 0.0) }
     }
 }

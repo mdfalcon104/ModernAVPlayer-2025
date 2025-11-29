@@ -38,6 +38,7 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     // MARK: - Input
     
     private let player: AVPlayer
+    private var timeObserver: Any?
     
     // MARK: - Outputs
     
@@ -56,6 +57,9 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
                                                name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(ModernAVPlayerPlaybackObservingService.itemFailedToPlayToEndTime),
                                                name: NSNotification.Name.AVPlayerItemFailedToPlayToEndTime, object: nil)
+        
+        // Add periodic time observer to check if current time exceeds safe duration
+        setupTimeObserver()
     }
     
     deinit {
@@ -69,6 +73,29 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
         NotificationCenter.default.removeObserver(self,
                                                   name: NSNotification.Name.AVPlayerItemFailedToPlayToEndTime,
                                                   object: nil)
+        
+        if let timeObserver = timeObserver {
+            player.removeTimeObserver(timeObserver)
+        }
+    }
+    
+    private func setupTimeObserver() {
+        // Observe player time every 0.5 seconds to check if duration exceeded
+        timeObserver = player.addPeriodicTimeObserver(
+            forInterval: CMTime(seconds: 0.5, preferredTimescale: 1000),
+            queue: .main
+        ) { [weak self] _ in
+            self?.checkIfDurationExceeded()
+        }
+    }
+    
+    private func checkIfDurationExceeded() {
+        guard ModernAVPlayerDurationConfig.useURLMetadataFallback else { return }
+        guard hasReallyReachedEndTime(player: player) else { return }
+        
+        // Fire the end time callback
+        ModernAVPlayerLogger.instance.log(message: "Duration exceeded via URL metadata", domain: .service)
+        onPlayToEndTime?()
     }
     
     private func hasReallyReachedEndTime(player: AVPlayer) -> Bool {
@@ -79,8 +106,12 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
         
         /// item current time when receive end time notification
         /// is not so accurate according to duration
-        /// added +1 make sure about the computation
-        let adjustedTime = currentTime + 1
+        /// When using URL metadata duration, be stricter (no +1 tolerance)
+        /// When using AVAsset duration, add +1 tolerance for accuracy
+        let isUsingURLMetadata = ModernAVPlayerDurationConfig.useURLMetadataFallback
+        let tolerance: Double = isUsingURLMetadata ? 0.5 : 1.0
+        
+        let adjustedTime = currentTime + tolerance
         return adjustedTime.rounded() >= duration.rounded()
     }
     

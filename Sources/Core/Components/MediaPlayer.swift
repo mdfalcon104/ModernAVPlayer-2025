@@ -33,5 +33,5 @@ public protocol MediaPlayer: class, PlayerCommand {
     var player: AVPlayer { get }
     var remoteCommands: [ModernAVPlayerRemoteCommand]? { get }
 
-    public func updateMetadata(_ metadata: PlayerMediaMetadata?)
+    func updateMetadata(_ metadata: PlayerMediaMetadata?)
 }
