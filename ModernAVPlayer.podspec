@@ -1,14 +1,14 @@
 Pod::Spec.new do |s|
-  s.name             = 'ModernAVPlayer'
-  s.version          = '1.7.3'
+  s.name             = 'ModernAVPlayer2'
+  s.version          = '1.7.5'
   s.summary          = 'ModernAVPlayer is an audio persistence AVPlayer wrapper'
   s.description      = <<-DESC
 ModernAVPlayer is an ongoing project that aims to create a more usable audio video player with readable status and network persistence option.
                        DESC
-  s.homepage         = 'https://github.com/raphrel/ModernAVPlayer'
+  s.homepage         = 'https://github.com/mdfalcon104/ModernAVPlayer-2025'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'raphael ankierman' => 'raphrel@gmail.com' }
-  s.source           = { :git => 'https://github.com/raphrel/ModernAVPlayer.git', :tag => s.version.to_s }
+  s.author           = { 'mdfalcon104' => 'mdfalcon104@example.com' }
+  s.source           = { :git => 'https://github.com/mdfalcon104/ModernAVPlayer-2025.git', :tag => s.version.to_s }
   s.default_subspec  = 'Core'
 
   s.ios.deployment_target = '10.0'
