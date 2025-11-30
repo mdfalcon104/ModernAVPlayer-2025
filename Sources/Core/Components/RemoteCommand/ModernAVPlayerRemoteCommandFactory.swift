@@ -34,11 +34,7 @@ public class ModernAVPlayerRemoteCommandFactory {
     /// Return all factory commands
     ///
     public var defaultCommands: [ModernAVPlayerRemoteCommand] {
-        var commands: [ModernAVPlayerRemoteCommand] = [playCommand, pauseCommand, stopCommand, togglePlayPauseCommand]
-        if #available(iOS 9.1, *) {
-            commands.append(changePositionCommand)
-        }
-        return commands
+        [playCommand, pauseCommand, stopCommand, togglePlayPauseCommand, changePositionCommand]
     }
     
     // MARK: - Inputs
@@ -157,7 +153,6 @@ public class ModernAVPlayerRemoteCommandFactory {
     /// Change Position Command
     /// Enable for clip media type only
     ///
-    @available(iOS 9.1, *)
     public lazy var changePositionCommand: ModernAVPlayerRemoteCommand = {
         let command = commandCenter.changePlaybackPositionCommand
         let isEnabled: (MediaType) -> Bool = { $0 == .clip }
