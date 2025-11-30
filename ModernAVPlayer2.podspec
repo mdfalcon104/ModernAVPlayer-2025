@@ -17,6 +17,7 @@ ModernAVPlayer is an ongoing project that aims to create a more usable audio vid
 
   s.subspec 'Core' do |core|
     core.source_files = 'Sources/Core/**/*'
+    core.module_name = 'ModernAVPlayer2'
   end
 
   s.subspec 'RxSwift' do |ss|
@@ -26,6 +27,7 @@ ModernAVPlayer is an ongoing project that aims to create a more usable audio vid
     ss.dependency "RxSwift", "~> 6.0"
     ss.dependency "RxCocoa", "~> 6.0"
     ss.source_files = 'Sources/RxModernAVPlayer/**/*'
+    ss.module_name = 'RxModernAVPlayer2'
   end
 
 end

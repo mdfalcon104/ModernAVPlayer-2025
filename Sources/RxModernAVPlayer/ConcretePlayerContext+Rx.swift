@@ -29,13 +29,13 @@ import ModernAVPlayer2
 import RxCocoa
 import RxSwift
 
-public extension Reactive where Base: ModernAVPlayer {
+public extension Reactive where Base: ModernAVPlayer2 {
     
-    var delegate: DelegateProxy<ModernAVPlayer, ModernAVPlayerDelegate> {
+    var delegate: DelegateProxy<ModernAVPlayer2, ModernAVPlayerDelegate> {
         return RxPlayerContextDelegateProxy.proxy(for: base)
     }
     
-    var state: Observable<ModernAVPlayer.State> {
+    var state: Observable<ModernAVPlayer2.State> {
         return RxPlayerContextDelegateProxy.proxy(for: base).stateSubject.asObservable()
     }
     
