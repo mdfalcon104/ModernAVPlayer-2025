@@ -1,10 +1,10 @@
-# ModernAVPlayer
-![Swift 4.2](https://img.shields.io/badge/Swift-5-orange.svg)
-[![Build Status](https://travis-ci.org/noreasonprojects/ModernAVPlayer.svg?branch=develop)](https://travis-ci.com/noreasonprojects/ModernAVPlayer)
-![CocoaPods](https://img.shields.io/cocoapods/v/ModernAVPlayer.svg)
-![CocoaPods](https://img.shields.io/cocoapods/l/ModernAVPlayer.svg)
+# ModernAVPlayer2
+![Swift 5.0](https://img.shields.io/badge/Swift-5.0-orange.svg)
+![CocoaPods](https://img.shields.io/cocoapods/v/ModernAVPlayer2.svg)
+![CocoaPods](https://img.shields.io/cocoapods/l/ModernAVPlayer2.svg)
+![Platform](https://img.shields.io/badge/platform-iOS%2010.0%2B%2C%20tvOS%2012.0%2B-blue.svg)
 
-``ModernAVPlayer`` is a persistence ``AVPlayer`` wrapper
+``ModernAVPlayer2`` is a persistence ``AVPlayer`` wrapper with comprehensive safe duration handling
 
 #### ++ Cool features ++
 - Get 9 nice and relevant player states (playing, buffering, loading, loaded...)
@@ -14,6 +14,9 @@
 - RxSwift compatible
 - Loop mode
 - Log available by domain
+- **NEW**: Safe duration handling with configurable URL metadata fallback
+- **NEW**: Media metadata duration support for precise playback control
+- **NEW**: Automatic playback termination at media duration limits
 ***
 
 ### Known issue
@@ -36,7 +39,7 @@ From version 1.5.1, resume playback from background mode failed. If you have any
 ## Requirements
 
 - iOS 10.0+
-- tvOS 10.0+
+- tvOS 12.0+
 
 > In order to support background mode, append the following to your ``Info.plist``:
 ```
@@ -76,9 +79,9 @@ let package = Package(
 $ gem install cocoapods
 ```
 
-> CocoaPods 1.3+ is required to build ModernAVPlayer.
+> CocoaPods 1.3+ is required to build ModernAVPlayer2.
 
-To integrate ``ModernAVPlayer`` into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate ``ModernAVPlayer2`` into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -86,8 +89,13 @@ platform :ios, '10.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-    pod 'ModernAVPlayer'
+    pod 'ModernAVPlayer2'
 end
+```
+
+For RxSwift support, use:
+```ruby
+pod 'ModernAVPlayer2/RxSwift'
 ```
 
 Then, run the following command:
@@ -133,6 +141,46 @@ player.loopMode = true
 | Failed  | O | O | X | X | X
 
 ## Advanced 
+
+### Safe Duration Handling
+
+ModernAVPlayer2 provides safe duration handling through a configurable 3-tier fallback system to prevent crashes from invalid CMTime values:
+
+**Duration Fallback Priority:**
+1. **URL Metadata** - Extracts duration from streaming URL parameters (e.g., `dur=180.5`)
+2. **Media Metadata** - Uses duration from `PlayerMediaMetadata` if available
+3. **AVAsset/AVPlayerItem** - Falls back to standard player item duration
+
+**Enabling URL Metadata Fallback:**
+```swift
+ModernAVPlayerDurationConfig.useURLMetadataFallback = true
+```
+
+**Safe Duration Access:**
+```swift
+// Safe optional access (returns nil for invalid CMTime)
+let duration = player.itemDuration  // Double?
+
+// Direct safe conversion methods
+let safeDuration = avPlayerItem.safeDuration  // Double?
+let assetDuration = avAsset.safeDuration      // Double?
+```
+
+**Media Metadata with Duration:**
+```swift
+let metadata = ModernAVPlayerMediaMetadata(
+    title: "Song Title",
+    artist: "Artist Name",
+    duration: 180.5  // Duration in seconds
+)
+let media = ModernAVPlayerMediaItem(
+    item: playerItem,
+    type: .audio,
+    metadata: metadata
+)
+```
+
+---
 
 ### Custom configuration
 
@@ -191,3 +239,37 @@ let state: Observable<ModernAVPlayer.State> = player.rx.state
 - If you **found a bug**, make a pull request using `Simple Audio` template in the example section to demonstrate.
 - If you **have a feature request**, open an issue.
 - If you **want to contribute**, submit a pull request.
+
+---
+
+## Version History
+
+### v1.7.8 (Current)
+- Enhanced README with safe duration handling documentation
+- Clarified URL metadata fallback system
+- Updated author attribution
+- tvOS 12.0+ support
+- iOS 10.0+ support
+
+### v1.7.7
+- Added tvOS 12.0+ deployment target support
+- Fixed platform compatibility issues
+- Implemented iOS 9.1+ availability checks
+
+### v1.7.6
+- Corrected pod name to ModernAVPlayer2
+- Updated RxSwift to 6.0 compatibility
+
+### v1.7.5
+- Introduced safe duration extensions
+- Implemented 3-tier duration fallback system
+- Added URL metadata extraction support
+- Added media metadata duration support
+
+---
+
+## Author
+
+**mdfalcon104** - Safe duration handling implementation and platform support
+
+ModernAVPlayer2 is maintained and distributed under the MIT License.
