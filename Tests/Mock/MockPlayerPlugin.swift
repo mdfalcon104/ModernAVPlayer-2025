@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@testable import ModernAVPlayer
+@testable import ModernAVPlayer2
 
 /*
  * Failed to compile SwiftyMocky protocol with optional method parameter

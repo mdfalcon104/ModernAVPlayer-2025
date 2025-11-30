@@ -10,7 +10,7 @@ import SwiftyMocky
 import XCTest
 #endif
 import AVFoundation
-@testable import ModernAVPlayer
+@testable import ModernAVPlayer2
 
 
 // MARK: - AudioSessionService

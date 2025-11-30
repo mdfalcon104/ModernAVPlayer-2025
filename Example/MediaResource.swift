@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 import AVFoundation
-import ModernAVPlayer
+import ModernAVPlayer2
 
 enum MediaResource: CustomStringConvertible {
     case live

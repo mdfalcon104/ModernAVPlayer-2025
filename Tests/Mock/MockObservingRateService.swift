@@ -26,7 +26,7 @@
 
 import AVFoundation
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 
 final class MockObservingRateService: RateObservingService {
     var onPlaying: (() -> Void)?

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import ModernAVPlayer
+import ModernAVPlayer2
 
 protocol AudioQueueLibrary: class {
     var dataSource: [ModernAVPlayerMedia] { get }

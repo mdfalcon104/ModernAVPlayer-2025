@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 
 final class MockURLSessionDataTask: CustomURLSessionDataTask {
     

@@ -3,7 +3,7 @@ inhibit_all_warnings!
 
 target 'ModernAVPlayer_Example' do
   platform :ios, '12.0'
-  pod 'ModernAVPlayer/RxSwift', :path => '.'
+  pod 'ModernAVPlayer2/RxSwift', :path => '.'
   pod 'SwiftLint', '0.38.2'
 
   target 'ModernAVPlayer_Tests' do
@@ -18,7 +18,7 @@ end
 
 target 'ModernAVPlayer_Example_tvOS' do
   platform :tvos, '12.0'
-  pod 'ModernAVPlayer/RxSwift', :path => '.'
+  pod 'ModernAVPlayer2/RxSwift', :path => '.'
 end
 
 post_install do |installer|

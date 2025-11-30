@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ModernAVPlayer
+import ModernAVPlayer2
 import AVKit
 
 final class SimpleVideoVC: UIViewController {

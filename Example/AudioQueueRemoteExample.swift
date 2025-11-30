@@ -8,7 +8,7 @@
 
 import Foundation
 import MediaPlayer
-import ModernAVPlayer
+import ModernAVPlayer2
 
 final class AudioQueueRemoteExample {
 

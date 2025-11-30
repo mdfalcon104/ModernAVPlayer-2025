@@ -7,7 +7,7 @@
 //
 
 import Foundation
-@testable import ModernAVPlayer
+@testable import ModernAVPlayer2
 
 final class MockPlayerMediaMetadata: PlayerMediaMetadata, Equatable {
     let title: String?

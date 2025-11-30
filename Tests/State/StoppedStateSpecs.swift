@@ -29,7 +29,7 @@ import Foundation
 import Quick
 import MediaPlayer
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import Nimble
 import SwiftyMocky
 

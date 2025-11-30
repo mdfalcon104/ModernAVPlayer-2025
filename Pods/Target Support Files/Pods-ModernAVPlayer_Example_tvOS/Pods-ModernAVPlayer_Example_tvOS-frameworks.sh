@@ -176,13 +176,13 @@ code_sign_if_enabled() {
 }
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer-tvOS/ModernAVPlayer.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer2-tvOS/ModernAVPlayer2.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxCocoa-tvOS/RxCocoa.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxRelay-tvOS/RxRelay.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxSwift-tvOS/RxSwift.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer-tvOS/ModernAVPlayer.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer2-tvOS/ModernAVPlayer2.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxCocoa-tvOS/RxCocoa.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxRelay-tvOS/RxRelay.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxSwift-tvOS/RxSwift.framework"

@@ -6,7 +6,7 @@
 //  Copyright © 2020 CocoaPods. All rights reserved.
 //
 
-import ModernAVPlayer
+import ModernAVPlayer2
 import RxSwift
 import RxCocoa
 import UIKit

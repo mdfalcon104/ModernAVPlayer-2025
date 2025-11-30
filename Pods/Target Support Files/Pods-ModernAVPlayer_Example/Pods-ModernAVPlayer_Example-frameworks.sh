@@ -176,13 +176,13 @@ code_sign_if_enabled() {
 }
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer-iOS/ModernAVPlayer.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer2-iOS/ModernAVPlayer2.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxCocoa-iOS/RxCocoa.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxRelay-iOS/RxRelay.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxSwift-iOS/RxSwift.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer-iOS/ModernAVPlayer.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ModernAVPlayer2-iOS/ModernAVPlayer2.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxCocoa-iOS/RxCocoa.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxRelay-iOS/RxRelay.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RxSwift-iOS/RxSwift.framework"

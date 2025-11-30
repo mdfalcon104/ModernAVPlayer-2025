@@ -8,7 +8,7 @@
 
 import Foundation
 import MediaPlayer
-import ModernAVPlayer
+import ModernAVPlayer2
 
 public struct RemoteCommandFactoryExample {
 

@@ -6,7 +6,7 @@
 //  Copyright © 2019 CocoaPods. All rights reserved.
 //
 
-import ModernAVPlayer
+import ModernAVPlayer2
 
 struct Helper {
 

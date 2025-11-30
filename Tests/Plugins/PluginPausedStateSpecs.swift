@@ -8,7 +8,7 @@
 
 import AVFoundation
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import SwiftyMocky
 import XCTest
 

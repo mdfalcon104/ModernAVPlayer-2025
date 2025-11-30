@@ -7,7 +7,7 @@
 //
 
 import AVFoundation
-import ModernAVPlayer
+import ModernAVPlayer2
 
 ///
 /// Documentation provided in PlayerConfiguration.swift

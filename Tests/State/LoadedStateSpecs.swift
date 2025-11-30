@@ -28,7 +28,7 @@ import AVFoundation
 import Quick
 import Nimble
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import SwiftyMocky
 
 final class LoadedStateSpecs: QuickSpec {

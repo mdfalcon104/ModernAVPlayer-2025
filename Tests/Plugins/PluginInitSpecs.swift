@@ -9,7 +9,7 @@
 import AVFoundation
 import Quick
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import Nimble
 import SwiftyMocky
 

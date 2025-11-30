@@ -8,7 +8,7 @@
 
 import Foundation
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 
 func matchPlayerMedia(lhs: PlayerMedia, rhs: PlayerMedia) -> Bool {
     return lhs.url == rhs.url

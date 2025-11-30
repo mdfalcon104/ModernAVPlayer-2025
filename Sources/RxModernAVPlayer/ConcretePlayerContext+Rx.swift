@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 // Compilation failed from SPM without this import
-import ModernAVPlayer
+import ModernAVPlayer2
 import RxCocoa
 import RxSwift
 

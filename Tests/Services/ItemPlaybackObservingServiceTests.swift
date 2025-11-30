@@ -26,7 +26,7 @@
 
 import AVFoundation
 import Quick
-@testable import ModernAVPlayer
+@testable import ModernAVPlayer2
 import Nimble
 
 final class ItemPlaybackObservingServiceTests: QuickSpec {

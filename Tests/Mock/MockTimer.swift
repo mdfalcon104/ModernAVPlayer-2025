@@ -28,7 +28,7 @@ import AVFoundation
 import Foundation
 import Quick
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import Nimble
 
 final class MockTimer: CustomTimer {

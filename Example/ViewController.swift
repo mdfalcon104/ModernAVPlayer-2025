@@ -24,7 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import ModernAVPlayer
+import ModernAVPlayer2
 import RxSwift
 import RxCocoa
 import UIKit

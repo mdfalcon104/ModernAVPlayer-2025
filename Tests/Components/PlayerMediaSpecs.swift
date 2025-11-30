@@ -7,7 +7,7 @@
 //
 
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import XCTest
 
 final class PlayerMediaSpecs: XCTestCase {

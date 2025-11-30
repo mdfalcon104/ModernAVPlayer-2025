@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 
 import Foundation
-@testable import ModernAVPlayer
+@testable import ModernAVPlayer2
 
 final class MockItemPlaybackObservingService: PlaybackObservingService {
     var onPlaybackStalled: (() -> Void)?

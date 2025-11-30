@@ -28,7 +28,7 @@ import AVFoundation
 import Foundation
 import Quick
 @testable
-import ModernAVPlayer
+import ModernAVPlayer2
 import MediaPlayer
 import Nimble
 import SwiftyMocky

@@ -27,7 +27,7 @@
 
 import Foundation
 import MediaPlayer
-@testable import ModernAVPlayer
+@testable import ModernAVPlayer2
 
 final class MockPlayCommand {
     
