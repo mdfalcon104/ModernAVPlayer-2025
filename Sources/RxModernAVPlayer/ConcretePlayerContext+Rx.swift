@@ -25,17 +25,17 @@
 // THE SOFTWARE.
 
 // Compilation failed from SPM without this import
-import ModernAVPlayer2
+import ModernAVPlayer
 import RxCocoa
 import RxSwift
 
-public extension Reactive where Base: ModernAVPlayer2 {
+public extension Reactive where Base: ModernAVPlayer {
     
-    var delegate: DelegateProxy<ModernAVPlayer2, ModernAVPlayerDelegate> {
+    var delegate: DelegateProxy<ModernAVPlayer, ModernAVPlayerDelegate> {
         return RxPlayerContextDelegateProxy.proxy(for: base)
     }
     
-    var state: Observable<ModernAVPlayer2.State> {
+    var state: Observable<ModernAVPlayer.State> {
         return RxPlayerContextDelegateProxy.proxy(for: base).stateSubject.asObservable()
     }
     

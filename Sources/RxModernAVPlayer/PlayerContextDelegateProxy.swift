@@ -25,21 +25,21 @@
 // THE SOFTWARE.
 
 // Compilation failed from SPM without this import
-import ModernAVPlayer2
+import ModernAVPlayer
 import RxCocoa
 import RxSwift
 
-extension ModernAVPlayer2: HasDelegate {
+extension ModernAVPlayer: HasDelegate {
     public typealias Delegate = ModernAVPlayerDelegate
 }
 
-public class RxPlayerContextDelegateProxy: DelegateProxy<ModernAVPlayer2, ModernAVPlayerDelegate>,
+public class RxPlayerContextDelegateProxy: DelegateProxy<ModernAVPlayer, ModernAVPlayerDelegate>,
     DelegateProxyType,
 ModernAVPlayerDelegate {
     
     // MARK: - Initialization
     
-    public init(playerContext: ModernAVPlayer2) {
+    public init(playerContext: ModernAVPlayer) {
         super.init(parentObject: playerContext, delegateProxy: RxPlayerContextDelegateProxy.self)
     }
     
@@ -49,7 +49,7 @@ ModernAVPlayerDelegate {
     
     // MARK: - Proxy Subjects
     
-    lazy var stateSubject = PublishSubject<ModernAVPlayer2.State>()
+    lazy var stateSubject = PublishSubject<ModernAVPlayer.State>()
     lazy var currentMediaSubject = PublishSubject<PlayerMedia?>()
     lazy var currentTimeSubject = PublishSubject<Double>()
     lazy var itemDurationSubject = PublishSubject<Double?>()
@@ -58,27 +58,27 @@ ModernAVPlayerDelegate {
     
     // MARK: - ModernAVPlayerDelegate
     
-    public func modernAVPlayer(_ player: ModernAVPlayer2, didStateChange state: ModernAVPlayer2.State) {
+    public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
         stateSubject.onNext(state)
     }
     
-    public func modernAVPlayer(_ player: ModernAVPlayer2, didCurrentMediaChange media: PlayerMedia?) {
+    public func modernAVPlayer(_ player: ModernAVPlayer, didCurrentMediaChange media: PlayerMedia?) {
         currentMediaSubject.onNext(media)
     }
     
-    public func modernAVPlayer(_ player: ModernAVPlayer2, didCurrentTimeChange currentTime: Double) {
+    public func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
         currentTimeSubject.onNext(currentTime)
     }
     
-    public func modernAVPlayer(_ player: ModernAVPlayer2, didItemDurationChange itemDuration: Double?) {
+    public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
         itemDurationSubject.onNext(itemDuration)
     }
     
-    public func modernAVPlayer(_ player: ModernAVPlayer2, unavailableActionReason: PlayerUnavailableActionReason) {
+    public func modernAVPlayer(_ player: ModernAVPlayer, unavailableActionReason: PlayerUnavailableActionReason) {
         unavailableActionSubject.onNext(unavailableActionReason)
     }
     
-    public func modernAVPlayer(_ player: ModernAVPlayer2, didItemPlayToEndTime endTime: Double) {
+    public func modernAVPlayer(_ player: ModernAVPlayer, didItemPlayToEndTime endTime: Double) {
         itemPlayToEndTimeSubject.onNext(endTime)
     }
 }
