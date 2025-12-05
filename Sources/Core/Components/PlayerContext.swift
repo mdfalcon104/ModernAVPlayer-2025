@@ -189,6 +189,15 @@ final class ModernAVPlayerContext: NSObject, PlayerContext {
         nowPlaying.update(metadata: metadata)
     }
 
+    //   MARK: - Custom Metadata
+     ///
+     /// Allow to update any custom metadata field in now playing info center
+     /// - parameter key: metadata key
+     /// - parameter value: metadata value
+    public func updateNowPlayingInfo(key: String, value: Any?) {
+        nowPlaying.overrideInfoCenter(for: key, value: value)
+    }
+
     // MARK: - Helper
 
     private func unaivalableCommand(reason: PlayerUnavailableActionReason) {

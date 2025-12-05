@@ -28,6 +28,7 @@ import ModernAVPlayer2
 import RxSwift
 import RxCocoa
 import UIKit
+import MediaPlayer
 
 final class ViewController: UIViewController {
 
@@ -78,6 +79,9 @@ final class ViewController: UIViewController {
                                                       artist: "Updated artist",
                                                       image: image)
         player.updateMetadata(newMetadata)
+//        player.updateMetadata(newMetadata, nowPlayingsInfoUpdates: [
+//            (key: MPNowPlayingInfoPropertyPlaybackRate, value: 0.0),
+//        ])
     }
     
     @IBAction func loadMediaWithPosition(_ sender: UIButton) {

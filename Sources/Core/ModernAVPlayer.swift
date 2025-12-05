@@ -143,6 +143,20 @@ public final class ModernAVPlayer: NSObject, ModernAVPlayerExposable {
     public func updateMetadata(_ metadata: PlayerMediaMetadata?) {
         context.updateMetadata(metadata)
     }
+
+    ///
+    /// Update a specific metadata field in now playing info center
+    /// - parameter key: metadata key
+    /// - parameter value: metadata value
+    ///     
+    /// - note: this does not update the PlayerMedia metadata
+    /// /
+    public func updateMetadata(_ metadata: PlayerMediaMetadata?, nowPlayingsInfoUpdates: [(key: String, value: Any?)]) {
+        context.updateMetadata(metadata)
+        for (key, value) in nowPlayingsInfoUpdates {
+            context.updateNowPlayingInfo(key: key, value: value)
+        }
+    }
     
     /// Begins playback of the current item
     public func play() {
