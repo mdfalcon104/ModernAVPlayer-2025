@@ -52,12 +52,6 @@ public final class ModernAVPlayer: NSObject, ModernAVPlayerExposable {
         return context.currentTime
     }
 
-    /// Duration for UI display. Reads mp4 mdhd atom for local files (ground truth).
-    /// Use this for showing duration labels. For slider/seek math, use itemDuration instead.
-    public var displayDuration: Double? {
-        return context.currentItem?.displayDuration
-    }
-
     /// Enable/Disable loop on the current media
     public var loopMode: Bool {
         get { return context.loopMode }
