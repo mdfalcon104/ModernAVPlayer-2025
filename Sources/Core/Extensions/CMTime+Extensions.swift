@@ -29,7 +29,6 @@ import Foundation
 
 extension CMTime {
     /// Safely converts CMTime to seconds if the time is valid and normal.
-    /// Returns nil if the time is invalid, indefinite, or NaN.
     var safeSeconds: Double? {
         guard isValid, isNumeric, !isIndefinite else { return nil }
         return seconds
@@ -37,11 +36,8 @@ extension CMTime {
 }
 
 extension AVPlayerItem {
-    /// Safely returns the duration in seconds if available.
-    /// Priority:
-    ///   1. URL query param (e.g. 'dur') — if useURLMetadataFallback enabled
-    ///   2. mp4 container atom (mdhd) — for local files, always-on (ground truth)
-    ///   3. AVPlayerItem.duration — AVFoundation fallback
+    /// Duration for player mechanics (slider, seeking, end-time detection).
+    /// Must use AVFoundation's duration to stay consistent with currentTime timeline.
     var safeDuration: Double? {
         if ModernAVPlayerDurationConfig.useURLMetadataFallback,
            let asset = asset as? AVURLAsset {
@@ -50,22 +46,24 @@ extension AVPlayerItem {
             }
         }
 
+        return duration.safeSeconds
+    }
+
+    /// Duration for UI display only. Reads mp4 mdhd atom for local files
+    /// (ground truth — AVFoundation reports 2x for DASH-produced files).
+    /// Falls through to safeDuration if parsing fails.
+    public var displayDuration: Double? {
         if let asset = asset as? AVURLAsset, asset.url.isFileURL {
             if let mdhdDuration = MP4DurationParser.durationFromFile(asset.url) {
                 return mdhdDuration
             }
         }
-
-        return duration.safeSeconds
+        return safeDuration
     }
 }
 
 extension AVAsset {
-    /// Safely returns the duration in seconds if available.
-    /// Priority:
-    ///   1. URL query param (e.g. 'dur') — if useURLMetadataFallback enabled
-    ///   2. mp4 container atom (mdhd) — for local files, always-on (ground truth)
-    ///   3. AVAsset.duration — AVFoundation fallback
+    /// Duration for player mechanics. Uses AVFoundation to match currentTime timeline.
     var safeDuration: Double? {
         if ModernAVPlayerDurationConfig.useURLMetadataFallback {
             if let urlDuration = durationFromURLMetadata() {
@@ -73,13 +71,17 @@ extension AVAsset {
             }
         }
 
+        return duration.safeSeconds
+    }
+
+    /// Duration for UI display only. Reads mp4 mdhd atom for local files.
+    public var displayDuration: Double? {
         if let urlAsset = self as? AVURLAsset, urlAsset.url.isFileURL {
             if let mdhdDuration = MP4DurationParser.durationFromFile(urlAsset.url) {
                 return mdhdDuration
             }
         }
-
-        return duration.safeSeconds
+        return safeDuration
     }
 
     /// Extracts duration from URL metadata (e.g., 'dur' query parameter).
@@ -106,12 +108,6 @@ extension AVAsset {
         if shouldUseURLMetadata {
             if let urlDuration = durationFromURLMetadata() {
                 return urlDuration
-            }
-        }
-
-        if let urlAsset = self as? AVURLAsset, urlAsset.url.isFileURL {
-            if let mdhdDuration = MP4DurationParser.durationFromFile(urlAsset.url) {
-                return mdhdDuration
             }
         }
 
