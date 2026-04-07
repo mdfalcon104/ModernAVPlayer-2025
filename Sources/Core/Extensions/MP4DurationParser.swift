@@ -1,7 +1,7 @@
 // The MIT License (MIT)
 //
 // ModernAVPlayer
-// Copyright (c) 2018 Raphael Ankierman <raphael.ankierman@radiofrance.com>
+// Copyright (c) 2025 mdfalcon104 <https://github.com/mdfalcon104>
 //
 // MP4DurationParser.swift
 // Reads the authoritative duration from mp4/m4a container atoms (mdhd).
