@@ -30,7 +30,6 @@ import Foundation
 extension CMTime {
     /// Safely converts CMTime to seconds if the time is valid and normal.
     /// Returns nil if the time is invalid, indefinite, or NaN.
-    /// Per Apple documentation: checks isValid, isNumeric, and !isIndefinite
     var safeSeconds: Double? {
         guard isValid, isNumeric, !isIndefinite else { return nil }
         return seconds
@@ -39,74 +38,83 @@ extension CMTime {
 
 extension AVPlayerItem {
     /// Safely returns the duration in seconds if available.
-    /// Returns nil if duration is not loaded or is invalid.
-    /// Priority: URL metadata first (if enabled), then AVPlayerItem duration
+    /// Priority:
+    ///   1. URL query param (e.g. 'dur') — if useURLMetadataFallback enabled
+    ///   2. mp4 container atom (mdhd) — for local files, always-on (ground truth)
+    ///   3. AVPlayerItem.duration — AVFoundation fallback
     var safeDuration: Double? {
-        // Try URL metadata first if enabled (from underlying asset)
         if ModernAVPlayerDurationConfig.useURLMetadataFallback,
            let asset = asset as? AVURLAsset {
             if let urlDuration = asset.durationFromURLMetadata() {
                 return urlDuration
             }
         }
-        
-        // Fall back to AVPlayerItem duration
+
+        if let asset = asset as? AVURLAsset, asset.url.isFileURL {
+            if let mdhdDuration = MP4DurationParser.durationFromFile(asset.url) {
+                return mdhdDuration
+            }
+        }
+
         return duration.safeSeconds
     }
 }
 
 extension AVAsset {
     /// Safely returns the duration in seconds if available.
-    /// Returns nil if duration is not loaded or is invalid.
-    /// Priority: URL metadata first (if enabled), then AVAsset duration
+    /// Priority:
+    ///   1. URL query param (e.g. 'dur') — if useURLMetadataFallback enabled
+    ///   2. mp4 container atom (mdhd) — for local files, always-on (ground truth)
+    ///   3. AVAsset.duration — AVFoundation fallback
     var safeDuration: Double? {
-        // Try URL metadata first if enabled
         if ModernAVPlayerDurationConfig.useURLMetadataFallback {
             if let urlDuration = durationFromURLMetadata() {
                 return urlDuration
             }
         }
-        
-        // Fall back to AVAsset duration
+
+        if let urlAsset = self as? AVURLAsset, urlAsset.url.isFileURL {
+            if let mdhdDuration = MP4DurationParser.durationFromFile(urlAsset.url) {
+                return mdhdDuration
+            }
+        }
+
         return duration.safeSeconds
     }
-    
+
     /// Extracts duration from URL metadata (e.g., 'dur' query parameter).
-    /// Useful for streaming URLs where AVAsset parsing may be inaccurate.
-    /// - Returns: Duration in seconds from URL metadata, or nil if not available
     func durationFromURLMetadata() -> Double? {
         guard let url = (self as? AVURLAsset)?.url,
               let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let queryItems = components.queryItems else {
             return nil
         }
-        
-        // Try to find 'dur' query parameter (common in streaming URLs)
+
         if let durItem = queryItems.first(where: { $0.name == "dur" }),
            let durValue = durItem.value,
            let duration = Double(durValue) {
             return duration
         }
-        
+
         return nil
     }
-    
+
     /// Returns duration with URL metadata priority.
-    /// Note: The global flag ModernAVPlayerDurationConfig.useURLMetadataFallback controls whether URL metadata is checked first.
-    /// - Parameter useURLMetadataFallback: If provided, overrides the global config flag
-    /// - Returns: Duration in seconds, or nil if unavailable
     func safeDuration(useURLMetadataFallback: Bool? = nil) -> Double? {
         let shouldUseURLMetadata = useURLMetadataFallback ?? ModernAVPlayerDurationConfig.useURLMetadataFallback
-        
-        // Try URL metadata first (if enabled)
+
         if shouldUseURLMetadata {
             if let urlDuration = durationFromURLMetadata() {
                 return urlDuration
             }
         }
-        
-        // Fall back to AVAsset duration
+
+        if let urlAsset = self as? AVURLAsset, urlAsset.url.isFileURL {
+            if let mdhdDuration = MP4DurationParser.durationFromFile(urlAsset.url) {
+                return mdhdDuration
+            }
+        }
+
         return duration.safeSeconds
     }
 }
-
