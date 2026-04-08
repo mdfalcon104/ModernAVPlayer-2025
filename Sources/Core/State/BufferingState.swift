@@ -77,7 +77,15 @@ final class BufferingState: NSObject, PlayerState {
     private func setupRateObservingCallback() {
         rateObservingService.onTimeout = { [weak self] in
             guard let context = self?.context else { return }
-            
+
+            // Local files don't need network — pause instead of waiting for network
+            // so the user can still seek to another position
+            if let asset = context.currentItem?.asset as? AVURLAsset, asset.url.isFileURL {
+                ModernAVPlayerLogger.instance.log(message: "Local file buffering timeout, pausing", domain: .service)
+                context.changeState(state: PausedState(context: context))
+                return
+            }
+
             let waitingState = WaitingNetworkState(context: context, autostart: true, error: .bufferingFailed)
             context.changeState(state: waitingState)
         }
@@ -106,11 +114,12 @@ final class BufferingState: NSObject, PlayerState {
     func seekCommand(position: Double) {
         context.currentItem?.cancelPendingSeeks()
         let time = CMTime(seconds: position, preferredTimescale: context.config.preferredTimescale)
-        context.player.seek(to: time) { [weak self] completed in
-            guard completed, let strongSelf = self else { return }
+        context.player.seek(to: time) { [weak self] _ in
+            guard let strongSelf = self else { return }
             strongSelf.context.delegate?.playerContext(didCurrentTimeChange: strongSelf.context.currentTime)
-            strongSelf.playCommand()
         }
+        // Start playback monitoring immediately — YouTube streams may delay or skip seek completion
+        playCommand()
     }
 
     // MARK: - Shared actions

@@ -38,7 +38,13 @@ struct AudioQueueResource {
         let sampleCURL = getURL(resource: "SampleC", type: "mp3")
         let metaC = ModernAVPlayerMediaMetadata(title: "Sample C")
         let sampleC = ModernAVPlayerMedia(url: sampleCURL, type: .clip, metadata: metaC)
-        return [sampleA, sampleB, sampleC]
+        
+        let sampleDURL = getURL(resource: "Take Me to Your Heart", type: "mp3")
+        let metaD = ModernAVPlayerMediaMetadata(title: "Take Me to Your Heart")
+        let sampleD = ModernAVPlayerMedia(url: sampleDURL, type: .clip, metadata: metaD)
+        
+        
+        return [sampleA, sampleB, sampleC, sampleD]
     }
 
     static private func getURL(resource: String, type: String) -> URL {

@@ -111,6 +111,13 @@ final class WaitingNetworkState: PlayerState {
     }
     
     func seek(position: Double) {
+        // For local files, allow seeking by transitioning back to buffering
+        if let asset = context.currentItem?.asset as? AVURLAsset, asset.url.isFileURL {
+            let state = BufferingState(context: context)
+            context.changeState(state: state)
+            state.seekCommand(position: position)
+            return
+        }
         let debug = "Reload a media first before seeking"
         ModernAVPlayerLogger.instance.log(message: debug, domain: .unavailableCommand)
         context.delegate?.playerContext(unavailableActionReason: .waitEstablishedNetwork)

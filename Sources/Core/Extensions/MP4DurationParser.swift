@@ -11,6 +11,7 @@
 // AVAsset.duration returns 2x the real value. This parser reads the
 // ground-truth duration by traversing: moov → trak → mdia → mdhd.
 
+import AVFoundation
 import Foundation
 
 /// Parses mp4/m4a container atoms to read the authoritative track duration.
@@ -31,6 +32,44 @@ public struct MP4DurationParser {
 
     public static func clearCache() {
         cache.removeAll()
+    }
+
+    /// Returns true if the file is a fragmented MP4 (has moof boxes at top level).
+    public static func isFragmentedMP4(_ url: URL) -> Bool {
+        guard url.isFileURL,
+              let handle = try? FileHandle(forReadingFrom: url) else { return false }
+        defer { handle.closeFile() }
+        let fileSize = handle.seekToEndOfFile()
+        handle.seek(toFileOffset: 0)
+        return findBox("moof", in: handle, from: 0, to: fileSize) != nil
+    }
+
+    /// Defragments a DASH fMP4 into a regular MP4 with a proper seek table.
+    /// No re-encoding — passthrough remux only.
+    ///
+    /// - Parameters:
+    ///   - source: Local fragmented MP4 file.
+    ///   - destination: Output path (overwritten if exists). Use `.m4a` extension.
+    ///   - completion: Called on main queue — `true` on success, `false` on failure or if not fragmented.
+    public static func defragment(source: URL, destination: URL, completion: @escaping (Bool) -> Void) {
+        guard source.isFileURL, isFragmentedMP4(source) else {
+            completion(false)
+            return
+        }
+
+        let asset = AVURLAsset(url: source)
+        guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough) else {
+            completion(false)
+            return
+        }
+        try? FileManager.default.removeItem(at: destination)
+        session.outputURL = destination
+        session.outputFileType = .m4a
+        session.exportAsynchronously {
+            DispatchQueue.main.async {
+                completion(session.status == .completed)
+            }
+        }
     }
 
     // MARK: - Internal

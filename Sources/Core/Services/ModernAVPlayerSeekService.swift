@@ -56,13 +56,17 @@ struct ModernAVPlayerSeekService: SeekService {
 
         guard position > 0 else { return (0, nil) }
 
-        if let duration = item.safeDuration {
-            guard position < duration
-                else { return (nil, .seekOverstepPosition) }
+        if let duration = item.safeDuration, position < duration {
             return (position, nil)
         }
-        
+
+        // Allow seek if position is within seekable/loaded ranges,
+        // even when safeDuration metadata is inaccurate (e.g. DASH-to-MP3 files)
         let ranges = getItemRangesAvailable(item)
-        return isPositionInRanges(position, ranges) ? (position, nil) : (nil, .seekPositionNotAvailable)
+        if isPositionInRanges(position, ranges) {
+            return (position, nil)
+        }
+
+        return (nil, item.safeDuration != nil ? .seekOverstepPosition : .seekPositionNotAvailable)
     }
 }
